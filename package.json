@@ -1,0 +1,24 @@
+{
+  "name": "dota-death-data-visualization",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:AlexKolpa/dota-death-data-visualization.git"
+  },
+  "keywords": [
+    "dota",
+    "visualization",
+    "datavis"
+  ],
+  "author": "Alex Kolpa <akolpa1990@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlexKolpa/dota-death-data-visualization/issues"
+  },
+  "homepage": "https://github.com/AlexKolpa/dota-death-data-visualization"
+}
