@@ -20,5 +20,10 @@
   "bugs": {
     "url": "https://github.com/AlexKolpa/dota-death-data-visualization/issues"
   },
-  "homepage": "https://github.com/AlexKolpa/dota-death-data-visualization"
+  "homepage": "https://github.com/AlexKolpa/dota-death-data-visualization",
+  "dependencies": {
+    "csv-parse": "0.0.6",
+    "csv-stringify": "0.0.5",
+    "stream-array": "^1.0.1"
+  }
 }
