@@ -34,7 +34,7 @@ function loadCircles(file) {
 
 		createCircles(data, 0);
 		
-		slider.attr('value', 0);
+		slider.attr('value', "0");
 	});
 }
 
@@ -83,4 +83,4 @@ function getEpanechnikovKernel(u) {
 	return defaultRadius * 3 / 4 * (1 - u * u);
 }
 
-loadCircles('/deaths/569649581-Pro.csv');
+loadCircles('/deaths/tier-pro.csv');
