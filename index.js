@@ -49,6 +49,7 @@ function writeResult() {
 function parseDeaths(player) {
 	var timestamps = getSortedTimestampsForPlayer(player);	
 	var lastPos = player[timestamps[0]];
+	playerDeaths.push(["playername", "timestamp", "xPos", "yPos"]);
 	for(var i = 0; i < timestamps.length; i++) {
 		var newPos = player[timestamps[i]];
 		var distance = getDistanceSq(lastPos, newPos);
