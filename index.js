@@ -7,6 +7,9 @@ var path = require('path');
 var maxDeathDistance = 1000;
 
 var parser = parse({delimiter: ',', relax: true});
+var matchPath = process.argv[2];
+var tier = matchPath.substring(matchPath.lastIndexOf('-') + 1, matchPath.lastIndexOf('.csv'));
+var match = matchPath.substring(matchPath.lastIndexOf('/') + 1, matchPath.lastIndexOf('-'));
 var input = fs.createReadStream(process.argv[2]);
 var playermap = {};
 
@@ -17,7 +20,7 @@ parser.on('readable', function() {
 		var name = record[3], timestamp = record[5];
 
 		if(!playermap[name]) {
-			playermap[name] = { playername : name };
+			playermap[name] = {};
 		}
 
 		playermap[name][timestamp] = [record[0],record[1]];
@@ -31,7 +34,7 @@ parser.on('error', function(err) {
 parser.on('finish', function() {
 	for(k in playermap) {
 		if(playermap.hasOwnProperty(k)) {
-			parseDeaths(playermap[k]);
+			parseDeaths(playermap[k], k);
 		}
 	}
 
@@ -39,22 +42,25 @@ parser.on('finish', function() {
 });
 
 function writeResult() {
+	var outputPath = __dirname + '/deaths/tier-' + tier.toLowerCase();
+	if(!fs.existsSync(outputPath)) {
+		playerDeaths.splice(0, 0, ['playername', 'timestamp', 'xPos', 'yPos', 'match']);
+	}
+
+	var output = fs.createWriteStream(outputPath, {'flags': 'a'});
 	var stringifier = stringify();
-	var filename = path.basename(process.argv[2]);
-	var output = fs.createWriteStream(__dirname + '/deaths/' + filename);
 	streamify(playerDeaths).pipe(stringifier).pipe(output);
 }
 
 
-function parseDeaths(player) {
+function parseDeaths(player, name) {
 	var timestamps = getSortedTimestampsForPlayer(player);	
 	var lastPos = player[timestamps[0]];
-	playerDeaths.push(["playername", "timestamp", "xPos", "yPos"]);
 	for(var i = 0; i < timestamps.length; i++) {
 		var newPos = player[timestamps[i]];
 		var distance = getDistanceSq(lastPos, newPos);
 		if(distance > maxDeathDistance) {
-			playerDeaths.push([player.playername, timestamps[i], lastPos[0], lastPos[1]]);
+			playerDeaths.push([name, timestamps[i], lastPos[0], lastPos[1], match]);
 		}
 		
 		lastPos = newPos;
