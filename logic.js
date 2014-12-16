@@ -32,7 +32,7 @@ function loadCircles(file) {
 
 		slider.attr('max', max);
 
-		createCircles(data, 0);
+		createCircles(data);
 		
 		slider.attr('value', "0");
 	});
