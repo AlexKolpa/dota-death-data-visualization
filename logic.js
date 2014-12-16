@@ -8,6 +8,10 @@ var death_scatterplot = d3.select("body")
     .attr("height", height);
 
 d3.csv("/deaths/648283764-VeryHigh.csv", function (error, data) {
+    if(error) {
+        console.log('error while parsing file', error);
+        return;
+    }
 
     console.log("Making ints out of the x & y positions");
 
