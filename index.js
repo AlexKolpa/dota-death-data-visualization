@@ -3,8 +3,7 @@ var parse = require('csv-parse');
 var stringify = require('csv-stringify');
 var streamify = require('stream-array');
 var path = require('path');
-
-var maxDeathDistance = 1000;
+var minTimeSteps = 10;
 
 var parser = parse({delimiter: ',', relax: true});
 var matchPath = process.argv[2];
@@ -54,13 +53,19 @@ function writeResult() {
 
 
 function parseDeaths(player, name) {
-	var timestamps = getSortedTimestampsForPlayer(player);	
+	var timestamps = getSortedTimestampsForPlayer(player);
+	var staticCounter = 0;
 	var lastPos = player[timestamps[0]];
 	for(var i = 0; i < timestamps.length; i++) {
 		var newPos = player[timestamps[i]];
 		var distance = getDistanceSq(lastPos, newPos);
-		if(distance > maxDeathDistance) {
+		if(distance < 1) {
+			staticCounter++;
+		}
+
+		if(staticCounter > minTimeSteps) {
 			playerDeaths.push([name, timestamps[i], lastPos[0], lastPos[1], match]);
+			staticCounter = 0;
 		}
 		
 		lastPos = newPos;
