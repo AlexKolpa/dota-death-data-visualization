@@ -42,7 +42,7 @@ parser.on('finish', function() {
 });
 
 function writeResult() {
-	var outputPath = __dirname + '/deaths/tier-' + tier.toLowerCase();
+	var outputPath = __dirname + '/deaths/tier-' + tier.toLowerCase() + '.csv';
 	if(!fs.existsSync(outputPath)) {
 		playerDeaths.splice(0, 0, ['playername', 'timestamp', 'xPos', 'yPos', 'match']);
 	}
