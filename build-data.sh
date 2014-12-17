@@ -13,8 +13,8 @@ if [ ! -z $1 ] && [ $1 == clean ]; then
 	awk -F, 'NR>1{gsub(/"/,"",$11);print $2","$3","$5","$6","$7","$9","$12 > "matches/"$4"-"$11".csv" }' master-zones.csv
 fi
 
-[ -d deaths ] || mkdir deaths
-[ "$(ls -A deaths)" ] && rm deaths/*
+[ ! -f output.csv ] || rm output.csv
+
 echo "Setting up npm"
 npm install --silent
 MATCHES=matches/*

@@ -4,11 +4,49 @@ var defaultRadius = 6;
 var movingWindowSize = 10;
 
 var svg = d3.select("body")
-	.append("svg")
+	.insert("svg", ":first-child")
 	.attr("width", width)
 	.attr("height", height);
 
 var slider = d3.select('#timeInput');
+var tierBoxes = d3.selectAll('.tier');
+tierBoxes.on('change',updateCircles);
+var activeTiers = [];
+
+function updateCircles() {
+	activeTiers = [];
+	
+	for(var i = 0; i < 4; i++) {
+		if(tierBoxes[0][i].checked) {
+			activeTiers.push(tierBoxes[0][i].value);
+		}
+	}
+
+	updateRadius(+slider[0][0].value);
+}
+
+slider.on('input', function() {
+	updateRadius(+this.value);	
+});
+
+function updateRadius(time) {
+	d3.selectAll('circle')
+		.attr('r', getRadius.bind(null, time));
+}
+
+function getRadius(time, item) {
+	if(activeTiers.indexOf(item.tier) == -1) {
+		return 0;
+	}
+
+	var diff = time - item.timestamp;
+	var scaledU = Math.min(Math.max(diff / movingWindowSize, -1), 1);
+	return getEpanechnikovKernel(scaledU);
+}
+
+function getEpanechnikovKernel(u) {
+	return defaultRadius * 3 / 4 * (1 - u * u);
+}
 
 function loadCircles(file) {
 	d3.csv(file, function (error, data) {
@@ -34,7 +72,7 @@ function loadCircles(file) {
 
 		createCircles(data);
 		
-		slider.attr('value', "0");
+		slider.property('value', 0);
 	});
 }
 
@@ -48,39 +86,29 @@ function createCircles(data) {
 		    return d.yPos
 		})).nice();
 
-
 	svg.append('g')
 		.selectAll('circle')
 		.data(data)
 		.enter()
 		.append('circle')
 		.attr('cx', function (d) {
-		    return x(d.xPos)
+			return x(d.xPos)
 		})
 		.attr('cy', function (d) {
-		    return y(d.yPos)
+			return y(d.yPos)
 		})
-		.style('fill', 'steelblue')
-		.style({'stroke': 'black', 'stroke-width': 2});
+		.style('fill', function (d) {
+			switch(d.tier) {
+				case 'normal':
+					return 'green';
+				case 'high':
+					return 'cyan';
+				case 'veryhigh':
+					return 'blue';
+				case 'pro':
+					return 'red';
+			}
+		});
 }
 
-slider.on('input', function() {
-	onSliderChange(+this.value);	
-});
-
-function onSliderChange(time) {
-	d3.selectAll('circle')
-		.attr('r', getRadius.bind(null, time));
-}
-
-function getRadius(time, item) {
-	var diff = time - item.timestamp;
-	var scaledU = Math.min(Math.max(diff / movingWindowSize, -1), 1);
-	return getEpanechnikovKernel(scaledU);
-}
-
-function getEpanechnikovKernel(u) {
-	return defaultRadius * 3 / 4 * (1 - u * u);
-}
-
-loadCircles('/deaths/tier-pro.csv');
+loadCircles('output.csv');

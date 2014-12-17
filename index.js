@@ -7,8 +7,7 @@ var minTimeSteps = 10;
 
 var parser = parse({delimiter: ',', relax: true});
 var matchPath = process.argv[2];
-var tier = matchPath.substring(matchPath.lastIndexOf('-') + 1, matchPath.lastIndexOf('.csv'));
-var match = matchPath.substring(matchPath.lastIndexOf('/') + 1, matchPath.lastIndexOf('-'));
+var tier = matchPath.substring(matchPath.lastIndexOf('-') + 1, matchPath.lastIndexOf('.csv')).toLowerCase();
 var input = fs.createReadStream(process.argv[2]);
 var playermap = {};
 
@@ -41,9 +40,9 @@ parser.on('finish', function() {
 });
 
 function writeResult() {
-	var outputPath = __dirname + '/deaths/tier-' + tier.toLowerCase() + '.csv';
+	var outputPath = __dirname + '/output.csv';
 	if(!fs.existsSync(outputPath)) {
-		playerDeaths.splice(0, 0, ['playername', 'timestamp', 'xPos', 'yPos', 'match']);
+		playerDeaths.splice(0, 0, ['playername', 'timestamp', 'xPos', 'yPos', 'tier']);
 	}
 
 	var output = fs.createWriteStream(outputPath, {'flags': 'a'});
@@ -64,7 +63,7 @@ function parseDeaths(player, name) {
 		}
 
 		if(staticCounter > minTimeSteps) {
-			playerDeaths.push([name, timestamps[i], lastPos[0], lastPos[1], match]);
+			playerDeaths.push([name, timestamps[i], lastPos[0], lastPos[1], tier]);
 			staticCounter = 0;
 		}
 		
