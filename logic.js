@@ -2,22 +2,31 @@ var width = 600;
 var height = 600;
 var defaultRadius = 6;
 var movingWindowSize = 10;
+var margin = {top : 30, right : 15, bottom : 20, left : 15};
 
 var svg = d3.select("body")
 	.insert("svg", ":first-child")
 	.attr("width", width)
 	.attr("height", height);
 
+svg.selectAll("image").data([0])
+	.enter()
+	.append("svg:image")
+	.attr("width", width)
+	.attr("height", height)
+	.attr("xlink:href", "dota2_minimap.png");
+
 var slider = d3.select('#timeInput');
 var tierBoxes = d3.selectAll('.tier');
-tierBoxes.on('change',updateCircles);
+tierBoxes.property('checked', true);
+tierBoxes.on('change', updateCircles);
 var activeTiers = [];
 
 function updateCircles() {
 	activeTiers = [];
-	
-	for(var i = 0; i < 4; i++) {
-		if(tierBoxes[0][i].checked) {
+
+	for (var i = 0; i < 4; i++) {
+		if (tierBoxes[0][i].checked) {
 			activeTiers.push(tierBoxes[0][i].value);
 		}
 	}
@@ -25,8 +34,10 @@ function updateCircles() {
 	updateRadius(+slider[0][0].value);
 }
 
-slider.on('input', function() {
-	updateRadius(+this.value);	
+updateCircles();
+
+slider.on('input', function () {
+	updateRadius(+this.value);
 });
 
 function updateRadius(time) {
@@ -35,7 +46,7 @@ function updateRadius(time) {
 }
 
 function getRadius(time, item) {
-	if(activeTiers.indexOf(item.tier) == -1) {
+	if (activeTiers.indexOf(item.tier) == -1) {
 		return 0;
 	}
 
@@ -47,11 +58,6 @@ function getRadius(time, item) {
 function getEpanechnikovKernel(u) {
 	return defaultRadius * 3 / 4 * (1 - u * u);
 }
-
-var map_background = d3.select("body")
-	.append("svg")
-	.attr("width", width)
-	.attr("height", height);
 
 function loadCircles(file) {
 	d3.csv(file, function (error, data) {
@@ -82,11 +88,11 @@ function loadCircles(file) {
 }
 
 function createCircles(data) {
-	var x = d3.scale.linear().range([0, width])
+	var x = d3.scale.linear().range([margin.left, width - margin.right])
 		.domain(d3.extent(data, function (d) {
 			return d.xPos
 		})).nice();
-	var y = d3.scale.linear().range([0, height])
+	var y = d3.scale.linear().range([margin.bottom, height - margin.top])
 		.domain(d3.extent(data, function (d) {
 			return d.yPos
 		})).nice();
@@ -103,7 +109,7 @@ function createCircles(data) {
 			return y(d.yPos)
 		})
 		.style('fill', function (d) {
-			switch(d.tier) {
+			switch (d.tier) {
 				case 'normal':
 					return 'green';
 				case 'high':
