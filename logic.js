@@ -108,14 +108,16 @@ function createCircles(data) {
 		.attr('cy', function (d) {
 			return y(d.yPos)
 		})
+		.style('stroke', 'white')
+		.style('stroke-width', 1)
 		.style('fill', function (d) {
 			switch (d.tier) {
 				case 'normal':
-					return 'green';
-				case 'high':
 					return 'cyan';
+				case 'high':
+					return 'green';
 				case 'veryhigh':
-					return 'blue';
+					return 'orange';
 				case 'pro':
 					return 'red';
 			}
