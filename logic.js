@@ -2,7 +2,7 @@ var width = 600;
 var height = 600;
 var defaultRadius = 6;
 var movingWindowSize = 10;
-var margin = {top : 30, right : 15, bottom : 20, left : 15};
+var margin = {top : 30, right : 0, bottom : 20, left : 0};
 
 var svg = d3.select("body")
 	.insert("svg", ":first-child")
