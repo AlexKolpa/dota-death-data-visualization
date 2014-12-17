@@ -48,10 +48,15 @@ function getEpanechnikovKernel(u) {
 	return defaultRadius * 3 / 4 * (1 - u * u);
 }
 
+var map_background = d3.select("body")
+	.append("svg")
+	.attr("width", width)
+	.attr("height", height);
+
 function loadCircles(file) {
 	d3.csv(file, function (error, data) {
 
-		if(error) {
+		if (error) {
 			console.log('error while parsing file', error);
 			return;
 		}
@@ -63,7 +68,7 @@ function loadCircles(file) {
 			d.xPos = +d.xPos;
 			d.yPos = +d.yPos;
 
-			if(d.timestamp > max) {
+			if (d.timestamp > max) {
 				max = d.timestamp;
 			}
 		});
@@ -71,7 +76,7 @@ function loadCircles(file) {
 		slider.attr('max', max);
 
 		createCircles(data);
-		
+
 		slider.property('value', 0);
 	});
 }
@@ -79,11 +84,11 @@ function loadCircles(file) {
 function createCircles(data) {
 	var x = d3.scale.linear().range([0, width])
 		.domain(d3.extent(data, function (d) {
-		return d.xPos
+			return d.xPos
 		})).nice();
 	var y = d3.scale.linear().range([0, height])
 		.domain(d3.extent(data, function (d) {
-		    return d.yPos
+			return d.yPos
 		})).nice();
 
 	svg.append('g')
