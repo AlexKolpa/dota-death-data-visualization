@@ -2,22 +2,33 @@ var width = 600;
 var height = 600;
 var defaultRadius = 6;
 var movingWindowSize = 10;
+var margin = {top : 30, right : -10, bottom : 10, left : -5};
 
 var svg = d3.select("body")
 	.insert("svg", ":first-child")
 	.attr("width", width)
 	.attr("height", height);
 
+svg.selectAll("image").data([0])
+	.enter()
+	.append("svg:image")
+	.attr("width", width)
+	.attr("height", height)
+	.attr("xlink:href", "dota2_minimap.png");
+
 var slider = d3.select('#timeInput');
+slider.property('value', 0);
+
 var tierBoxes = d3.selectAll('.tier');
-tierBoxes.on('change',updateCircles);
+tierBoxes.property('checked', true);
+tierBoxes.on('change', updateCircles);
 var activeTiers = [];
 
 function updateCircles() {
 	activeTiers = [];
-	
-	for(var i = 0; i < 4; i++) {
-		if(tierBoxes[0][i].checked) {
+
+	for (var i = 0; i < 4; i++) {
+		if (tierBoxes[0][i].checked) {
 			activeTiers.push(tierBoxes[0][i].value);
 		}
 	}
@@ -25,8 +36,10 @@ function updateCircles() {
 	updateRadius(+slider[0][0].value);
 }
 
-slider.on('input', function() {
-	updateRadius(+this.value);	
+updateCircles();
+
+slider.on('input', function () {
+	updateRadius(+this.value);
 });
 
 function updateRadius(time) {
@@ -35,7 +48,7 @@ function updateRadius(time) {
 }
 
 function getRadius(time, item) {
-	if(activeTiers.indexOf(item.tier) == -1) {
+	if (activeTiers.indexOf(item.tier) == -1) {
 		return 0;
 	}
 
@@ -50,8 +63,7 @@ function getEpanechnikovKernel(u) {
 
 function loadCircles(file) {
 	d3.csv(file, function (error, data) {
-
-		if(error) {
+		if (error) {
 			console.log('error while parsing file', error);
 			return;
 		}
@@ -63,7 +75,7 @@ function loadCircles(file) {
 			d.xPos = +d.xPos;
 			d.yPos = +d.yPos;
 
-			if(d.timestamp > max) {
+			if (d.timestamp > max) {
 				max = d.timestamp;
 			}
 		});
@@ -71,19 +83,17 @@ function loadCircles(file) {
 		slider.attr('max', max);
 
 		createCircles(data);
-		
-		slider.property('value', 0);
 	});
 }
 
 function createCircles(data) {
-	var x = d3.scale.linear().range([0, width])
+	var x = d3.scale.linear().range([margin.left, width - margin.right])
 		.domain(d3.extent(data, function (d) {
-		return d.xPos
+			return d.xPos
 		})).nice();
-	var y = d3.scale.linear().range([0, height])
+	var y = d3.scale.linear().range([height - margin.top, margin.bottom])
 		.domain(d3.extent(data, function (d) {
-		    return d.yPos
+			return d.yPos
 		})).nice();
 
 	svg.append('g')
@@ -97,17 +107,22 @@ function createCircles(data) {
 		.attr('cy', function (d) {
 			return y(d.yPos)
 		})
+		.style('stroke', 'white')
+		.style('stroke-width', 1)
 		.style('fill', function (d) {
-			switch(d.tier) {
+			switch (d.tier) {
 				case 'normal':
-					return 'green';
-				case 'high':
 					return 'cyan';
+				case 'high':
+					return 'green';
 				case 'veryhigh':
-					return 'blue';
+					return 'orange';
 				case 'pro':
 					return 'red';
 			}
+		})
+		.text(function(d) {
+			return d.xPos + ", " + d.yPos;
 		});
 }
 
