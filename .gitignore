@@ -32,4 +32,5 @@ master-*.csv
 Data Dictionary.xlsx
 Dota Labels.csv
 /matches/
+/js/
 output.csv

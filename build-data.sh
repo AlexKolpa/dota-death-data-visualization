@@ -30,6 +30,11 @@ do
 	node index.js $f || break
 	((INDEX++))
 done
+
+[ -d js ] || mkdir js
+cp node_modules/dc/dc.js js/dc.js
+cp node_modules/dc/node_modules/crossfilter/crossfilter.js js/crossfilter.js
+
 echo "parsed $COUNT of $COUNT matches"
 END=$(timestamp)
 echo "Done. Took $(( $END - $START )) seconds." 

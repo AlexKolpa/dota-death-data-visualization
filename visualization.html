@@ -3,15 +3,15 @@
     <title>DotA Death Data Visualization</title>
     <meta charset="utf-8">
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="js/crossfilter.js" charset="utf-8"></script>
+    <script src="js/dc.js" charset="utf-8"></script>
 </head>
 
 <style>
-	svg {
-		float: left;
-	}
 </style>
 
 <body>
+	<div id="dota-death-volume"></div>
 	<div class="tiers">
 		<input type="checkbox" class="tier" id="normal" value="normal">Normal<br>
 		<input type="checkbox" class="tier" id="high" value="high">High<br>
