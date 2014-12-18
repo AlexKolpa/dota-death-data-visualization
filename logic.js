@@ -2,7 +2,7 @@ var width = 600;
 var height = 600;
 var defaultRadius = 6;
 var movingWindowSize = 10;
-var margin = {top : 30, right : 0, bottom : 20, left : 0};
+var margin = {top : 30, right : -10, bottom : 10, left : -5};
 
 var svg = d3.select("body")
 	.insert("svg", ":first-child")
@@ -17,6 +17,8 @@ svg.selectAll("image").data([0])
 	.attr("xlink:href", "dota2_minimap.png");
 
 var slider = d3.select('#timeInput');
+slider.property('value', 0);
+
 var tierBoxes = d3.selectAll('.tier');
 tierBoxes.property('checked', true);
 tierBoxes.on('change', updateCircles);
@@ -61,7 +63,6 @@ function getEpanechnikovKernel(u) {
 
 function loadCircles(file) {
 	d3.csv(file, function (error, data) {
-
 		if (error) {
 			console.log('error while parsing file', error);
 			return;
@@ -82,8 +83,6 @@ function loadCircles(file) {
 		slider.attr('max', max);
 
 		createCircles(data);
-
-		slider.property('value', 0);
 	});
 }
 
@@ -92,7 +91,7 @@ function createCircles(data) {
 		.domain(d3.extent(data, function (d) {
 			return d.xPos
 		})).nice();
-	var y = d3.scale.linear().range([margin.bottom, height - margin.top])
+	var y = d3.scale.linear().range([height - margin.top, margin.bottom])
 		.domain(d3.extent(data, function (d) {
 			return d.yPos
 		})).nice();
@@ -121,6 +120,9 @@ function createCircles(data) {
 				case 'pro':
 					return 'red';
 			}
+		})
+		.text(function(d) {
+			return d.xPos + ", " + d.yPos;
 		});
 }
 
