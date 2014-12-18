@@ -1,6 +1,7 @@
 var width = 1000;
 var height = 1000;
-var defaultRadius = 6;
+var defaultRadius = 9;
+var border = 2;
 var movingWindowSize = 10;
 var margin = {top : 20, right : -40, bottom : 30, left : 0};
 
@@ -15,6 +16,14 @@ svg.selectAll("image").data([0])
 	.attr("width", width)
 	.attr("height", height)
 	.attr("xlink:href", "dota2_minimap.png");
+
+svg.selectAll("rect").data([1])
+	.enter()
+	.append('rect')
+	.attr('fill', 'black')
+	.attr('opacity', 0.3)
+	.attr('width', width)
+	.attr('height', height);
 
 var slider = d3.select('#timeInput');
 slider.property('value', 0);
@@ -108,7 +117,7 @@ function createCircles(data) {
 			return y(d.yPos)
 		})
 		.style('stroke', 'white')
-		.style('stroke-width', 1)
+		.style('stroke-width', border)
 		.style('fill', function (d) {
 			switch (d.tier) {
 				case 'normal':
